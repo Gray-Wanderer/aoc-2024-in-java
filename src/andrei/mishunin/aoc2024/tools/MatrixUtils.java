@@ -1,5 +1,7 @@
 package andrei.mishunin.aoc2024.tools;
 
+import java.util.List;
+
 public class MatrixUtils {
     private MatrixUtils() {
     }
@@ -98,5 +100,11 @@ public class MatrixUtils {
 
     public static int getManhattanDistance(int i, int j, int i2, int j2) {
         return Math.abs(i2 - i) + Math.abs(j2 - j);
+    }
+
+    public static char[][] toMatrix(List<String> matrix) {
+        return matrix.stream()
+                .map(String::toCharArray)
+                .toArray(char[][]::new);
     }
 }
