@@ -33,4 +33,12 @@ public class ArrayUtils {
         }
         return parsedData;
     }
+
+    public static Integer[] toInteger(String[] data) {
+        Integer[] parsedData = new Integer[data.length];
+        for (int i = 0; i < data.length; i++) {
+            parsedData[i] = Integer.parseInt(data[i]);
+        }
+        return parsedData;
+    }
 }

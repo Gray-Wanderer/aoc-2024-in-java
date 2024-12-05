@@ -27,5 +27,6 @@ replay_pid*
 .idea
 out
 
-# Exclude Inputs
+# Exclude AoC
 input.txt
+day_template
