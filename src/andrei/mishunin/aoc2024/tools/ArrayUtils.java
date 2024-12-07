@@ -41,4 +41,12 @@ public class ArrayUtils {
         }
         return parsedData;
     }
+
+    public static long[] toLong(String[] data) {
+        long[] parsedData = new long[data.length];
+        for (int i = 0; i < data.length; i++) {
+            parsedData[i] = Long.parseLong(data[i]);
+        }
+        return parsedData;
+    }
 }
