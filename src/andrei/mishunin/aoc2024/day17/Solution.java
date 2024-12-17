@@ -12,6 +12,10 @@ public class Solution {
         long registerC = Long.parseLong(input.get(2).substring(12));
         String[] program = input.get(4).substring(9).split(",");
 
+        return solve(registerA, registerB, registerC, program);
+    }
+
+    public static String solve(long registerA, long registerB, long registerC, String[] program) {
         int i = 0;
         StringBuilder output = new StringBuilder();
         while (i < program.length) {
@@ -59,88 +63,32 @@ public class Solution {
         return output.toString();
     }
 
-    public static long solve2(String file, int[] expected) {
-        long registerA = expected[0];
-        for (int i = 1; i < expected.length; i++) {
-            registerA += registerA * 8 + ((long) expected[i]);
-        }
+    public static long solve2(String file) {
+        List<String> input = InputReader.readAllLines(file);
+        String program = input.get(4).substring(9);
 
-        long r = registerA;
-        int i = 0;
-        while (r != 0) {
-            i++;
-            r /= 8;
-        }
-        System.out.println(i);
-        return registerA;
+        return solve2(program + ",", program.split(","), 0, program.length() - 1);
     }
 
-    public static long solve3(String file, int[] expected) {
-        List<String> input = InputReader.readAllLines(file);
-        String[] program = input.get(4).substring(9).split(",");
-
-        long min = 1;
-        long max = 7;
-        for (int i = 0; i < expected.length - 1; i++) {
-            min *= 8;
-            max *= 8;
+    public static long solve2(String fullExpectedOutput, String[] subProgram, long registerA, int start) {
+        if (start < 0) {
+            return registerA;
         }
 
-        brute:
-        for (long bruteRegisterA = min; bruteRegisterA <= max; bruteRegisterA++) {
-            long registerA = bruteRegisterA;
-            long registerB = 0;
-            long registerC = 0;
+        registerA *= 8;
+        String expectedOutput = fullExpectedOutput.substring(start);
 
-            int i = 0;
-            int expectedI = 0;
-            while (i < program.length) {
-                int instruction = Integer.parseInt(program[i]);
-                int operandLiteral = Integer.parseInt(program[i + 1]);
-                long operandCombo = switch (operandLiteral) {
-                    case 4 -> registerA;
-                    case 5 -> registerB;
-                    case 6 -> registerC;
-                    default -> operandLiteral;
-                };
+        for (int i = 0; i < 8; i++) {
+            String subResult = solve(registerA, 0, 0, subProgram);
 
-                switch (instruction) {
-                    case 0:
-                        registerA = registerA / (1L << operandCombo);
-                        break;
-                    case 1:
-                        registerB ^= operandLiteral;
-                        break;
-                    case 2:
-                        registerB = operandCombo % 8;
-                        break;
-                    case 3:
-                        if (registerA != 0) {
-                            i = operandLiteral;
-                            continue;
-                        }
-                        break;
-                    case 4:
-                        registerB ^= registerC;
-                        break;
-                    case 5:
-                        if (expected[expectedI++] != operandCombo % 8) {
-                            continue brute;
-                        }
-                        break;
-                    case 6:
-                        registerB = registerA / (1L << operandCombo);
-                        break;
-                    case 7:
-                        registerC = registerA / (1L << operandCombo);
-                        break;
+            if (subResult.equals(expectedOutput)) {
+                long nextRegisterA = solve2(fullExpectedOutput, subProgram, registerA, start - 2);
+                if (nextRegisterA != -1) {
+                    return nextRegisterA;
                 }
-                i += 2;
             }
-
-            return bruteRegisterA;
+            registerA++;
         }
-
         return -1;
     }
 
@@ -149,11 +97,9 @@ public class Solution {
         System.out.println(solve("day17/test.txt"));
         System.out.println("== SOLUTION 1 ==");
         System.out.println(solve("day17/input.txt"));
-        //1,7,6,5,1,0,5,0,7
-//        System.out.println("== TEST 2 ==");
-//        System.out.println(reverseSolve("day17/test.txt"));
+        System.out.println("== TEST 2 ==");
+        System.out.println(solve2("day17/test.txt"));
         System.out.println("== SOLUTION 2 ==");
-        System.out.println(solve2("day17/input.txt", new int[]{2, 4, 1, 3, 7, 5, 4, 2, 0, 3, 1, 5, 5, 5, 3, 0}));
-        //30115082 too low
+        System.out.println(solve2("day17/input.txt"));
     }
 }
