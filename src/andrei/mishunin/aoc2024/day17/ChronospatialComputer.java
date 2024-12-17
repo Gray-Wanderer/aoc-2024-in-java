@@ -4,18 +4,18 @@ import andrei.mishunin.aoc2024.tools.InputReader;
 
 import java.util.List;
 
-public class Solution {
-    public static String solve(String file) {
+public class ChronospatialComputer {
+    public static String executeProgram(String file) {
         List<String> input = InputReader.readAllLines(file);
         long registerA = Long.parseLong(input.get(0).substring(12));
         long registerB = Long.parseLong(input.get(1).substring(12));
         long registerC = Long.parseLong(input.get(2).substring(12));
         String[] program = input.get(4).substring(9).split(",");
 
-        return solve(registerA, registerB, registerC, program);
+        return executeProgram(registerA, registerB, registerC, program);
     }
 
-    public static String solve(long registerA, long registerB, long registerC, String[] program) {
+    public static String executeProgram(long registerA, long registerB, long registerC, String[] program) {
         int i = 0;
         StringBuilder output = new StringBuilder();
         while (i < program.length) {
@@ -63,14 +63,14 @@ public class Solution {
         return output.toString();
     }
 
-    public static long solve2(String file) {
+    public static long fixRegisterA(String file) {
         List<String> input = InputReader.readAllLines(file);
         String program = input.get(4).substring(9);
 
-        return solve2(program + ",", program.split(","), 0, program.length() - 1);
+        return fixRegisterA(program + ",", program.split(","), 0, program.length() - 1);
     }
 
-    public static long solve2(String fullExpectedOutput, String[] subProgram, long registerA, int start) {
+    public static long fixRegisterA(String fullExpectedOutput, String[] subProgram, long registerA, int start) {
         if (start < 0) {
             return registerA;
         }
@@ -79,10 +79,10 @@ public class Solution {
         String expectedOutput = fullExpectedOutput.substring(start);
 
         for (int i = 0; i < 8; i++) {
-            String subResult = solve(registerA, 0, 0, subProgram);
+            String subResult = executeProgram(registerA, 0, 0, subProgram);
 
             if (subResult.equals(expectedOutput)) {
-                long nextRegisterA = solve2(fullExpectedOutput, subProgram, registerA, start - 2);
+                long nextRegisterA = fixRegisterA(fullExpectedOutput, subProgram, registerA, start - 2);
                 if (nextRegisterA != -1) {
                     return nextRegisterA;
                 }
@@ -94,12 +94,12 @@ public class Solution {
 
     public static void main(String[] args) {
         System.out.println("== TEST 1 ==");
-        System.out.println(solve("day17/test.txt"));
+        System.out.println(executeProgram("day17/test.txt"));
         System.out.println("== SOLUTION 1 ==");
-        System.out.println(solve("day17/input.txt"));
+        System.out.println(executeProgram("day17/input.txt"));
         System.out.println("== TEST 2 ==");
-        System.out.println(solve2("day17/test.txt"));
+        System.out.println(fixRegisterA("day17/test.txt"));
         System.out.println("== SOLUTION 2 ==");
-        System.out.println(solve2("day17/input.txt"));
+        System.out.println(fixRegisterA("day17/input.txt"));
     }
 }
